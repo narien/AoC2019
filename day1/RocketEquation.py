@@ -15,10 +15,9 @@ def CalculateFuelCost(moduleArr):
     return modulesTotal, additionalFuelTotal
 
 if __name__ == '__main__':
-    moduleArr = []
     with open('input.txt') as f:
-        for line in f:
-            moduleArr.append(int(line))
+        moduleArr = [int(val) for val in f]
+
     modulesTotal, additionalFuel = CalculateFuelCost(moduleArr)        
     print('part 1: ' + str(modulesTotal))
     print('part 2: ' + str(modulesTotal + additionalFuel))

@@ -3,90 +3,45 @@ import sys
 def manhattanDist(x, y):
     return abs(x) + abs(y)
 
+def takeStep(direction, x, y, stepsTaken):
+    stepsTaken += 1
+    if direction == 'U':
+        y += 1
+    elif direction == 'R':
+        x += 1
+    elif direction == 'D':
+        y -= 1
+    elif direction == 'L':
+        x -= 1
+    return x, y, stepsTaken
 
 def mapLine(line):
     lineCoords = {}
     x, y = 0, 0
     stepsTaken = 0
     for move in line:
-        if move[0] == 'U':
-            yD = int(move[1:])
-            for i in range(yD):
-                stepsTaken += 1
-                y += 1
-                lineCoords[(x, y)] = (manhattanDist(x, y), stepsTaken)
-        elif move[0] == 'R':
-            xD = int(move[1:])
-            for i in range(xD):
-                stepsTaken += 1
-                x += 1
-                lineCoords[(x, y)] = (manhattanDist(x, y), stepsTaken)
-        elif move[0] == 'D':
-            yD = int(move[1:])
-            for i in range(yD):
-                stepsTaken += 1
-                y -= 1
-                lineCoords[(x, y)] = (manhattanDist(x, y), stepsTaken)
-        elif move[0] == 'L':
-            xD = int(move[1:])
-            for i in range(xD):
-                stepsTaken += 1
-                x -= 1
-                lineCoords[(x, y)] = (manhattanDist(x, y), stepsTaken)
+        newSteps = int(move[1:])
+        for _ in range(newSteps):
+            x, y, stepsTaken = takeStep(move[0], x, y, stepsTaken)
+            lineCoords[(x, y)] = (manhattanDist(x, y), stepsTaken)
     return lineCoords
 
 def findClosestOverlapDistance(firstLine, newLine):
     closestDistToOrigin = sys.maxsize
-    closestTotalWalkingDist = sys.maxsize
+    shortestWalk = sys.maxsize
     x, y = 0, 0
     stepsTaken = 0
     for move in newLine:
-        if move[0] == 'U':
-            yD = int(move[1:])
-            for i in range(yD):
-                stepsTaken += 1
-                y += 1
-                if (x, y) in firstLine:
-                    currDist = firstLine[(x, y)][0]
-                    if currDist < closestDistToOrigin:
-                        closestDistToOrigin = currDist
-                    if stepsTaken + firstLine[(x, y)][1] < closestTotalWalkingDist:
-                        closestTotalWalkingDist = stepsTaken + firstLine[(x, y)][1]
-
-        elif move[0] == 'R':
-            xD = int(move[1:])
-            for i in range(xD):
-                stepsTaken += 1
-                x += 1
-                if (x, y) in firstLine:
-                    currDist = firstLine[(x, y)][0]
-                    if currDist < closestDistToOrigin:
-                        closestDistToOrigin = currDist
-                    if stepsTaken + firstLine[(x, y)][1] < closestTotalWalkingDist:
-                        closestTotalWalkingDist = stepsTaken + firstLine[(x, y)][1]
-        elif move[0] == 'D':
-            yD = int(move[1:])
-            for i in range(yD):
-                stepsTaken += 1
-                y -= 1
-                if (x, y) in firstLine:
-                    currDist = firstLine[(x, y)][0]
-                    if currDist < closestDistToOrigin:
-                        closestDistToOrigin = currDist
-                    if stepsTaken + firstLine[(x, y)][1] < closestTotalWalkingDist:
-                        closestTotalWalkingDist = stepsTaken + firstLine[(x, y)][1]
-        elif move[0] == 'L':
-            xD = int(move[1:])
-            for i in range(xD):
-                stepsTaken += 1
-                x -= 1
-                if (x, y) in firstLine:
-                    currDist = firstLine[(x, y)][0]
-                    if currDist < closestDistToOrigin:
-                        closestDistToOrigin = currDist
-                    if stepsTaken + firstLine[(x, y)][1] < closestTotalWalkingDist:
-                        closestTotalWalkingDist = stepsTaken + firstLine[(x, y)][1]
-    return closestDistToOrigin, closestTotalWalkingDist
+        newSteps = int(move[1:])
+        for _ in range(newSteps):
+            x, y, stepsTaken = takeStep(move[0], x, y, stepsTaken)
+            if (x, y) in firstLine:
+                currDist = firstLine[(x, y)][0]
+                if currDist < closestDistToOrigin:
+                    closestDistToOrigin = currDist
+                if stepsTaken + firstLine[(x, y)][1] < shortestWalk:
+                    shortestWalk = stepsTaken + firstLine[(x, y)][1]
+    return closestDistToOrigin, shortestWalk
 
 if __name__ == '__main__':
     with open('input.txt') as f:

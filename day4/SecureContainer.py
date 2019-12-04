@@ -1,41 +1,22 @@
 import sys
 
-def checkDoubleDigit(value):
-    prevChar = 'a'
-    currCount = 1
-    countOfRecurrance = {1}
-    for i in str(value):
-        if i == prevChar:
-            currCount += 1
-        else:
-            countOfRecurrance.add(currCount)
-            currCount = 1
-        prevChar = i
-    countOfRecurrance.add(currCount)
-    return (len(countOfRecurrance) > 1, 2 in countOfRecurrance)
-
 def isIncreasing(value):
-    ints = [int(i) for i in str(value)]
-    currInt = 0
-    for i in ints:
-        if i < currInt:
-            return False
-        currInt = i
-    return True
+    ints = [i for i in str(value)]
+    intsSorted = sorted(ints)
+    return ints == intsSorted
+
+def validatePassword(value):
+    if not isIncreasing(value): return (0, 0)
+
+    digitDict = {i:str(value).count(i) for i in set(str(value))}
+    return (1 if len(digitDict) < 6 else 0, 1 if 2 in digitDict.values() else 0)
 
 def countValidPasswords(lowerBound, upperBound):
-    partOneCount = 0
-    partTwoCount = 0
-    current = lowerBound
-    while current < upperBound:
-        if(isIncreasing(current)):
-            doubleOrBigger, exclusiveDouble = checkDoubleDigit(current)
-            if doubleOrBigger:
-                partOneCount += 1
-            if exclusiveDouble:
-                partTwoCount += 1
-        current += 1
-
+    partOneCount, partTwoCount = 0, 0
+    for i in range(lowerBound, upperBound):
+        p1, p2 = validatePassword(i)
+        partOneCount += p1
+        partTwoCount += p2
     return (partOneCount, partTwoCount)
 
 if __name__ == '__main__':

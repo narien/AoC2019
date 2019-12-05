@@ -29,15 +29,9 @@ def runProgram(program, input):
             print("opcode 4 print: %i" % getVal(iP+1, op[2], program))
             iP += 2
         elif op[4] == 5:
-            if not getVal(iP+1, op[2], program) == 0:
-                iP =  getVal(iP+2, op[1], program)
-            else:
-                iP += 3
+            iP = getVal(iP+2, op[1], program) if not getVal(iP+1, op[2], program) == 0 else iP + 3
         elif op[4] == 6:
-            if getVal(iP+1, op[2], program) == 0:
-                iP =  getVal(iP+2, op[1], program)
-            else:
-                iP += 3
+            iP = getVal(iP+2, op[1], program) if getVal(iP+1, op[2], program) == 0 else iP + 3
         elif op[4] == 7:
             program[program[iP+3]] = 1 if getVal(iP+1, op[2], program) < getVal(iP+2, op[1], program) else 0
             iP += 4
@@ -51,7 +45,7 @@ def runProgram(program, input):
 if __name__ == '__main__':
     program = []
     with open('input.txt') as f:
-        program += ([int(i) for i in f.readline().split(',')])
+        program += ([int(i) for i in f.read().split(',')])
 
     print("Part 1:")
     runProgram(program.copy(), 1)
